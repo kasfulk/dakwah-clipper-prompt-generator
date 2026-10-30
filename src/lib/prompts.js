@@ -25,13 +25,25 @@ const CLIP_PLAN = `Berikan 10 Clip Plan yang berpotensi mendatangkan viewer, lik
 
 const EFFECTCRAFT = `Buatkan Clip Video dengan effectcraft-from-opendesign dari __URL__
 
+// sisipkan disini
+<Pallete warna>
+__PALETTE__
+
+<Layout video>
+__LAYOUT__
+
 Dengan clip-plan:
 __PLAN__`;
 
+export const NO_OVERRIDE = '(pakai bawaan MASTER PROMPT apa adanya)';
+
 export const clipPlanPrompt = (id) => CLIP_PLAN.replaceAll('__URL__', watchUrl(id));
 
-export const effectcraftPrompt = (id, planText) =>
-  EFFECTCRAFT.replace('__URL__', `https://youtube.com/watch?v=${id}`).replace('__PLAN__', () => planText);
+export const effectcraftPrompt = (id, planText, palette = '', layout = '') =>
+  EFFECTCRAFT.replace('__URL__', `https://youtube.com/watch?v=${id}`)
+    .replace('__PALETTE__', () => palette.trim() || NO_OVERRIDE)
+    .replace('__LAYOUT__', () => layout.trim() || NO_OVERRIDE)
+    .replace('__PLAN__', () => planText);
 
 function sliceObject(text) {
   const start = text.indexOf('{');

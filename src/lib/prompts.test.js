@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parseYouTubeId, transcriptUrl } from './youtube.js';
-import { clipPlanPrompt, effectcraftPrompt, parseClipPlan } from './prompts.js';
+import { clipPlanPrompt, effectcraftPrompt, parseClipPlan, NO_OVERRIDE } from './prompts.js';
 
 const ID = 'dQw4w9WgXcQ';
 
@@ -50,8 +50,25 @@ test('prompt effectcraft memakai format user', () => {
   const plan = '{\n  "video_title": "Judul",\n  "clips": []\n}';
   assert.equal(
     effectcraftPrompt(ID, plan),
-    `Buatkan Clip Video dengan effectcraft-from-opendesign dari https://youtube.com/watch?v=${ID}\n\nDengan clip-plan:\n${plan}`,
+    `Buatkan Clip Video dengan effectcraft-from-opendesign dari https://youtube.com/watch?v=${ID}
+
+// sisipkan disini
+<Pallete warna>
+${NO_OVERRIDE}
+
+<Layout video>
+${NO_OVERRIDE}
+
+Dengan clip-plan:
+${plan}`,
   );
+});
+
+test('prompt effectcraft menyisipkan palet dan layout pilihan user', () => {
+  const out = effectcraftPrompt(ID, '{"clips":[]}', '  Antique Gold #C6A46A — aksen  ', 'Center 18–75%: speaker');
+  assert.ok(out.includes('<Pallete warna>\nAntique Gold #C6A46A — aksen\n'));
+  assert.ok(out.includes('<Layout video>\nCenter 18–75%: speaker\n'));
+  assert.ok(!out.includes(NO_OVERRIDE));
 });
 
 test('prompt effectcraft menyalin clip-plan apa adanya, termasuk pola $', () => {

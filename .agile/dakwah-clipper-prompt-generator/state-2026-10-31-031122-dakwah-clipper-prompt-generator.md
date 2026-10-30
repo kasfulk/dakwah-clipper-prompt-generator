@@ -1,0 +1,29 @@
+scope: dakwah-clipper-prompt-generator
+session: 2026-10-31-031122-dakwah-clipper-prompt-generator
+stage: COMPLETE
+status: PASS
+updated: 2026-10-31 03:11
+classification: SMALL
+completed: [brainstorm, plan, coding, code_review, testing, verification]
+current: []
+next: []
+shares_scope_with: dakwah-clipper-prompt-generator
+skipped:
+  - DEEP_RESEARCH: endpoint, model, dan header CORS diverifikasi langsung dengan curl, bukan riset eksternal
+  - CODE_PLAN: 3 file baru + 2 file diubah, alur sudah final saat intake
+  - WORKTREE: satu work stream, tanpa cabang paralel
+
+permintaan: prompt sederhana (URL + palet + layout + clip-plan) diproses jadi MASTER PROMPT final memakai model lokal.
+
+implementasi:
+  - src/lib/masterPrompt.js: MASTER_TEMPLATE dengan placeholder __URL__/__PALETTE__/__LAYOUT__/__PLAN__
+  - src/lib/prompts.js: effectcraftPrompt sekarang menyisipkan <Pallete warna> dan <Layout video>
+  - src/lib/llm.js: buildMessages + streamFinalPrompt (SSE) ke http://localhost:20128/v1/chat/completions, model kn-b/gpt-6-luna
+  - src/App.svelte: langkah 6 palet/layout, 7 prompt sederhana, 8 proses streaming + copy + peringatan output terpotong
+  - src/lib/llm.test.js: parsing SSE, chunk terpotong, error HTTP
+
+verifikasi:
+  - npm test: 12 pass / 0 fail
+  - npx vite build: sukses
+  - node end-to-end ke model lokal: 32,4 s, 13.816 karakter, 12/12 seksi, 0 placeholder tersisa, clip-plan tersalin utuh
+  - browser (moli, localhost:5173): klik Proses → final prompt, cross-origin stream jalan, <pre> terisi
