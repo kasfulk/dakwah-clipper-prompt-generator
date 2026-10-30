@@ -35,7 +35,7 @@ __LAYOUT__
 Dengan clip-plan:
 __PLAN__`;
 
-export const NO_OVERRIDE = '(pakai bawaan MASTER PROMPT apa adanya)';
+export const NO_OVERRIDE = '(tidak ada override — pertahankan seluruh isi bagian ini dari MASTER PROMPT apa adanya)';
 
 export const clipPlanPrompt = (id) => CLIP_PLAN.replaceAll('__URL__', watchUrl(id));
 

@@ -8,7 +8,8 @@ Kamu menerima PROMPT SEDERHANA dari user dan MASTER PROMPT TEMPLATE yang memuat 
 Hasilkan prompt final dengan mengganti setiap placeholder memakai data dari PROMPT SEDERHANA.
 Aturan:
 - Salin seluruh teks template apa adanya: jangan meringkas, menghapus, menambah, atau menerjemahkan bagian mana pun.
-- Bila override bertuliskan "pakai bawaan MASTER PROMPT apa adanya", pertahankan isi bagian itu tanpa perubahan.
+- Bila override bertuliskan "tidak ada override", pertahankan isi bagian itu dan tulis satu baris: Tidak ada override — pakai ketentuan di atas.
+- Seksi 10: tabel arah visual hanya contoh. Sesuaikan barisnya dengan klip pada __PLAN__ (id, subjek, arah visual), lalu salin JSON-nya apa adanya.
 - Keluarkan HANYA prompt final dalam Markdown. Tanpa pagar kode, tanpa kalimat pembuka, tanpa komentar.`;
 
 export const buildMessages = (simplePrompt) => [

@@ -79,8 +79,8 @@
   <header>
     <h1>Dakwah Clip <span>Prompt Generator</span></h1>
     <p class="lede">
-      Dari link YouTube sampai perintah <code>effectcraft-from-opendesign</code>. Semua berjalan di browser —
-      tanpa AI, tanpa server.
+      Dari link YouTube sampai prompt final <code>effectcraft-from-opendesign</code>. Langkah 1–7 berjalan di
+      browser tanpa AI; langkah 8 memakai model lokal di mesin ini.
     </p>
   </header>
 
