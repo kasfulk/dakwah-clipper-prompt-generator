@@ -19,6 +19,9 @@
   let finalPrompt = $state('');
   let busy = $state(false);
   let error = $state('');
+  let elapsed = $state(0);
+  let chars = $state(0);
+  let controller = null;
   let copied = $state('');
 
   const id = $derived(parseYouTubeId(urlInput));
@@ -43,18 +46,40 @@
     busy = true;
     error = '';
     finalPrompt = '';
+    elapsed = 0;
+    chars = 0;
+    const started = Date.now();
+    controller = new AbortController();
+    const ticker = setInterval(() => {
+      elapsed = Math.round((Date.now() - started) / 1000);
+    }, 500);
+    const timeout = setTimeout(() => controller.abort(), 180_000);
     try {
       const text = await streamFinalPrompt(command, {
+        signal: controller.signal,
         onToken: (delta) => {
           finalPrompt += delta;
+          chars = finalPrompt.length;
         },
       });
       if (!text.trim()) throw new Error('Model mengembalikan teks kosong.');
     } catch (e) {
-      error = `${e.message}. Pastikan ${ENDPOINT} hidup dan model ${MODEL} tersedia.`;
+      error =
+        e.name === 'AbortError'
+          ? `Dibatalkan setelah ${Math.round((Date.now() - started) / 1000)} detik tanpa hasil.`
+          : `${e.message} — endpoint ${ENDPOINT}, model ${MODEL}.`;
     } finally {
+      clearInterval(ticker);
+      clearTimeout(timeout);
+      elapsed = Math.round((Date.now() - started) / 1000);
+      controller = null;
       busy = false;
     }
+  }
+
+  function stopFinal() {
+    controller?.abort();
+    busy = false;
   }
 
   async function copy(text, key) {
@@ -215,9 +240,21 @@
     </p>
     <div class="btn-row">
       <button class="btn" onclick={runFinal} disabled={busy || !command}>
-        {busy ? 'Memproses…' : 'Proses → final prompt'}
+        {busy ? `Memproses… ${elapsed}s` : 'Proses → final prompt'}
       </button>
+      {#if busy}
+        <button class="btn ghost" onclick={stopFinal}>Stop</button>
+      {/if}
     </div>
+    {#if busy || (finalPrompt && elapsed)}
+      <p class="hint {chars ? 'ok' : ''}" aria-live="polite">
+        {busy
+          ? chars
+            ? `${chars.toLocaleString('id-ID')} karakter diterima · ${elapsed}s`
+            : `Menunggu token pertama… ${elapsed}s`
+          : `Selesai dalam ${elapsed}s · ${chars.toLocaleString('id-ID')} karakter`}
+      </p>
+    {/if}
     {#if error}
       <p class="hint error">{error}</p>
     {:else if truncated}

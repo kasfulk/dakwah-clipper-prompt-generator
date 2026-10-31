@@ -40,6 +40,17 @@ test('streamFinalPrompt merangkai delta walau terpotong di tengah baris', async 
   assert.deepEqual(tokens, ['# MASTER', ' PROMPT — ünïcode']);
 });
 
+test('streamFinalPrompt menerima balasan JSON utuh walau stream diminta', async () => {
+  const body = JSON.stringify({ choices: [{ message: { role: 'assistant', content: 'HALO DUNIA' } }] });
+  const tokens = [];
+  const text = await streamFinalPrompt('x', {
+    fetch: async () => new Response(streamOf([body])),
+    onToken: (t) => tokens.push(t),
+  });
+  assert.equal(text, 'HALO DUNIA');
+  assert.deepEqual(tokens, ['HALO DUNIA']);
+});
+
 test('streamFinalPrompt melempar error HTTP dengan potongan respons', async () => {
   await assert.rejects(
     streamFinalPrompt('x', { fetch: async () => new Response('model tidak ada', { status: 404 }) }),

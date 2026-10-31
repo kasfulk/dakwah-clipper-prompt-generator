@@ -1,6 +1,6 @@
 import { MASTER_TEMPLATE } from './masterPrompt.js';
 
-export const ENDPOINT = 'http://localhost:20128/v1/chat/completions';
+export const ENDPOINT = 'http://127.0.0.1:20128/v1/chat/completions';
 export const MODEL = 'kn-b/gpt-6-luna';
 
 const SYSTEM = `Kamu adalah prompt compiler.
@@ -37,12 +37,15 @@ export async function streamFinalPrompt(
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
+  let raw = '';
   let out = '';
 
   for (;;) {
     const { value, done } = await reader.read();
     if (done) break;
-    buffer += decoder.decode(value, { stream: true });
+    const chunk = decoder.decode(value, { stream: true });
+    raw += chunk;
+    buffer += chunk;
     const lines = buffer.split('\n');
     buffer = lines.pop() ?? '';
     for (const line of lines) {
@@ -59,6 +62,19 @@ export async function streamFinalPrompt(
       } catch {
         /* potongan SSE tidak utuh: lewati */
       }
+    }
+  }
+
+  // Sebagian proxy membalas JSON utuh walau stream diminta.
+  if (!out) {
+    try {
+      const whole = JSON.parse(raw).choices?.[0]?.message?.content;
+      if (whole) {
+        out = whole;
+        onToken?.(whole);
+      }
+    } catch {
+      /* bukan JSON: biarkan kosong, pemanggil yang melaporkan */
     }
   }
   return out;

@@ -27,3 +27,9 @@ verifikasi:
   - npx vite build: sukses
   - node end-to-end ke model lokal: 32,4 s, 13.816 karakter, 12/12 seksi, 0 placeholder tersisa, clip-plan tersalin utuh
   - browser (moli, localhost:5173): klik Proses → final prompt, cross-origin stream jalan, <pre> terisi
+
+perbaikan putaran 2 (commit a553b90):
+  - lede homepage masih klaim "tanpa AI, tanpa server" → diperbaiki
+  - seksi 10: tabel arah visual kini mengikuti clip-plan (uji 2 klip → tabel c01/c02, bukan c01–c10 hardcode)
+  - override kosong: model sempat mengosongkan seksi Layout; token NO_OVERRIDE diperjelas + aturan eksplisit di system
+  - verifikasi ulang live: 12/12 seksi, 0 placeholder, palet user terpasang, layout "Tidak ada override — pakai ketentuan di atas."
