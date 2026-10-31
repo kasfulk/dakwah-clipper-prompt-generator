@@ -1,8 +1,8 @@
 <script>
   import { parseYouTubeId, transcriptUrl } from './lib/youtube.js';
   import { clipPlanPrompt, effectcraftPrompt, parseClipPlan } from './lib/prompts.js';
-  import { MASTER_TEMPLATE } from './lib/masterPrompt.js';
-  import { streamFinalPrompt, ENDPOINT, MODEL } from './lib/llm.js';
+  import { buildFinalPrompt, replaceClipTable } from './lib/finalPrompt.js';
+  import { adaptClipTable, ENDPOINT, MODEL } from './lib/llm.js';
 
   const read = (key) => {
     try {
@@ -16,19 +16,19 @@
   let planInput = $state(read('clipgen.plan'));
   let palette = $state(read('clipgen.palette'));
   let layout = $state(read('clipgen.layout'));
-  let finalPrompt = $state('');
+  let rows = $state('');
   let busy = $state(false);
   let error = $state('');
   let elapsed = $state(0);
-  let chars = $state(0);
   let controller = null;
   let copied = $state('');
 
   const id = $derived(parseYouTubeId(urlInput));
   const plan = $derived(parseClipPlan(planInput));
   const prompt = $derived(id ? clipPlanPrompt(id) : '');
+  const simpleUrl = $derived(id ? `https://youtube.com/watch?v=${id}` : '');
   const command = $derived(id && plan?.text ? effectcraftPrompt(id, plan.text, palette, layout) : '');
-  const truncated = $derived(finalPrompt !== '' && finalPrompt.length < MASTER_TEMPLATE.length * 0.8);
+  const finalPrompt = $derived(id && plan?.text ? replaceClipTable(buildFinalPrompt({ url: simpleUrl, palette, layout, plan: plan.text }), rows) : '');
 
   $effect(() => {
     try {
@@ -41,33 +41,27 @@
     }
   });
 
-  async function runFinal() {
-    if (!command || busy) return;
+  /** Opsional: model hanya menyusun ulang tabel arah visual seksi 10. */
+  async function runAdapt() {
+    if (!plan?.text || busy) return;
     busy = true;
     error = '';
-    finalPrompt = '';
     elapsed = 0;
-    chars = 0;
     const started = Date.now();
     controller = new AbortController();
     const ticker = setInterval(() => {
       elapsed = Math.round((Date.now() - started) / 1000);
     }, 500);
-    const timeout = setTimeout(() => controller.abort(), 180_000);
+    const timeout = setTimeout(() => controller.abort(), 60_000);
     try {
-      const text = await streamFinalPrompt(command, {
-        signal: controller.signal,
-        onToken: (delta) => {
-          finalPrompt += delta;
-          chars = finalPrompt.length;
-        },
-      });
-      if (!text.trim()) throw new Error('Model mengembalikan teks kosong.');
+      const text = await adaptClipTable(plan.text, { signal: controller.signal });
+      if (!/^\|\s*c\d+\s*\|/m.test(text)) throw new Error('Model tidak mengembalikan baris tabel yang valid.');
+      rows = text;
     } catch (e) {
       error =
         e.name === 'AbortError'
-          ? `Dibatalkan setelah ${Math.round((Date.now() - started) / 1000)} detik tanpa hasil.`
-          : `${e.message} — endpoint ${ENDPOINT}, model ${MODEL}.`;
+          ? `Dibatalkan setelah ${Math.round((Date.now() - started) / 1000)} detik.`
+          : `${e.message} — ${MODEL} @ ${ENDPOINT}`;
     } finally {
       clearInterval(ticker);
       clearTimeout(timeout);
@@ -77,7 +71,7 @@
     }
   }
 
-  function stopFinal() {
+  function stopAdapt() {
     controller?.abort();
     busy = false;
   }
@@ -234,31 +228,26 @@
   </section>
 
   <section class="step" class:locked={!command}>
-    <div class="step-head"><span class="num">8</span><h2>Proses jadi final prompt</h2></div>
+    <div class="step-head"><span class="num">8</span><h2>Final prompt</h2></div>
     <p>
-      Dikirim ke <code>{ENDPOINT}</code> dengan model <code>{MODEL}</code>, lalu dirakit mengikuti MASTER PROMPT.
+      Dirakit langsung di browser dari MASTER PROMPT — seketika, tanpa risiko terpotong. Model lokal
+      (<code>{MODEL}</code>) hanya dipakai bila Anda ingin tabel arah visual seksi 10 disesuaikan otomatis.
     </p>
     <div class="btn-row">
-      <button class="btn" onclick={runFinal} disabled={busy || !command}>
-        {busy ? `Memproses… ${elapsed}s` : 'Proses → final prompt'}
+      <button class="btn ghost" onclick={runAdapt} disabled={busy || !command}>
+        {busy ? `Menyesuaikan tabel… ${elapsed}s` : 'Adaptasi tabel seksi 10 dengan AI'}
       </button>
       {#if busy}
-        <button class="btn ghost" onclick={stopFinal}>Stop</button>
+        <button class="btn ghost" onclick={stopAdapt}>Stop</button>
+      {/if}
+      {#if rows}
+        <button class="btn ghost" onclick={() => (rows = '')}>Kembali ke tabel bawaan</button>
       {/if}
     </div>
-    {#if busy || (finalPrompt && elapsed)}
-      <p class="hint {chars ? 'ok' : ''}" aria-live="polite">
-        {busy
-          ? chars
-            ? `${chars.toLocaleString('id-ID')} karakter diterima · ${elapsed}s`
-            : `Menunggu token pertama… ${elapsed}s`
-          : `Selesai dalam ${elapsed}s · ${chars.toLocaleString('id-ID')} karakter`}
-      </p>
-    {/if}
     {#if error}
       <p class="hint error">{error}</p>
-    {:else if truncated}
-      <p class="hint error">Hasil lebih pendek dari template — periksa apakah ada bagian yang terpotong.</p>
+    {:else if rows}
+      <p class="hint ok">Tabel seksi 10 disesuaikan model · {elapsed}s</p>
     {/if}
     {#if finalPrompt}
       <div class="output">
@@ -273,7 +262,8 @@
   </section>
 
   <footer>
-    Langkah 1–7 berjalan lokal di browser. Langkah 8 hanya mengirim prompt ke <code>{ENDPOINT}</code> di mesin ini.
+    Langkah 1–8 berjalan lokal di browser. Hanya tombol adaptasi tabel yang mengirim data ke
+    <code>{ENDPOINT}</code> di mesin ini.
   </footer>
   <span class="sr-only" aria-live="polite">{copied ? 'Tersalin ke clipboard' : ''}</span>
 </main>

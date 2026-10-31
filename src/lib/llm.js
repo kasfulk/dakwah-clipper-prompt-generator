@@ -1,34 +1,28 @@
-import { MASTER_TEMPLATE } from './masterPrompt.js';
-
 export const ENDPOINT = 'http://127.0.0.1:20128/v1/chat/completions';
 export const MODEL = 'kn-b/gpt-6-luna';
 
-const SYSTEM = `Kamu adalah prompt compiler.
-Kamu menerima PROMPT SEDERHANA dari user dan MASTER PROMPT TEMPLATE yang memuat placeholder __URL__, __PALETTE__, __LAYOUT__, __PLAN__.
-Hasilkan prompt final dengan mengganti setiap placeholder memakai data dari PROMPT SEDERHANA.
-Aturan:
-- Salin seluruh teks template apa adanya: jangan meringkas, menghapus, menambah, atau menerjemahkan bagian mana pun.
-- Bila override bertuliskan "tidak ada override", pertahankan isi bagian itu dan tulis satu baris: Tidak ada override — pakai ketentuan di atas.
-- Seksi 10: tabel arah visual hanya contoh. Sesuaikan barisnya dengan klip pada __PLAN__ (id, subjek, arah visual), lalu salin JSON-nya apa adanya.
-- Keluarkan HANYA prompt final dalam Markdown. Tanpa pagar kode, tanpa kalimat pembuka, tanpa komentar.`;
+const SYSTEM = `Kamu menyusun tabel arah visual untuk klip video dakwah pendek.
+Keluarkan HANYA baris tabel Markdown, satu baris per klip pada clip-plan, dengan format:
+| c01 | subjek singkat (maks 6 kata) | arah visual singkat (maks 10 kata) |
+Aturan: tanpa header tabel, tanpa baris pemisah, tanpa penjelasan, tanpa pagar kode, tanpa teks lain.`;
 
-export const buildMessages = (simplePrompt) => [
+export const buildMessages = (planText) => [
   { role: 'system', content: SYSTEM },
-  {
-    role: 'user',
-    content: `PROMPT SEDERHANA\n---\n${simplePrompt}\n---\n\nMASTER PROMPT TEMPLATE\n---\n${MASTER_TEMPLATE}\n---`,
-  },
+  { role: 'user', content: String(planText) },
 ];
 
-/** SSE stream dari endpoint OpenAI-compatible; kembalikan teks penuh. */
-export async function streamFinalPrompt(
-  simplePrompt,
+/**
+ * Minta model menyusun ulang tabel seksi 10 saja (keluaran pendek, aman di bawah
+ * batas 30 detik router). Prompt final sendiri tidak pernah lewat model.
+ */
+export async function adaptClipTable(
+  planText,
   { onToken, signal, endpoint = ENDPOINT, model = MODEL, fetch: send = globalThis.fetch } = {},
 ) {
   const res = await send(endpoint, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ model, stream: true, messages: buildMessages(simplePrompt) }),
+    body: JSON.stringify({ model, stream: true, messages: buildMessages(planText) }),
     signal,
   });
   if (!res.ok) throw new Error(`HTTP ${res.status} — ${(await res.text()).slice(0, 300)}`);
