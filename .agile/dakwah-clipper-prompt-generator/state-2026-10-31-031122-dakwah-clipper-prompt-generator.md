@@ -33,3 +33,11 @@ perbaikan putaran 2 (commit a553b90):
   - seksi 10: tabel arah visual kini mengikuti clip-plan (uji 2 klip → tabel c01/c02, bukan c01–c10 hardcode)
   - override kosong: model sempat mengosongkan seksi Layout; token NO_OVERRIDE diperjelas + aturan eksplisit di system
   - verifikasi ulang live: 12/12 seksi, 0 placeholder, palet user terpasang, layout "Tidak ada override — pakai ketentuan di atas."
+
+perbaikan putaran 3 (commit f0729e8) — gejala: klik Proses tanpa respons:
+  - akar masalah: router 20128 membuffer SSE. Probe: firstChunkMs 7489, totalMs 7517, 6 chunk tiba bersamaan → tidak ada token inkremental, UI lama diam sampai akhir (25–90 s)
+  - ENDPOINT diganti http://127.0.0.1:20128/... (server hanya listen IPv4; [::1] gagal)
+  - UI: tombol "Memproses… Ns" + Stop + status "Menunggu token pertama… Ns" / "N karakter diterima", auto-abort 180 s
+  - fallback bila proxy membalas JSON utuh walau stream diminta (13 test lulus)
+  - verifikasi browser (moli): pada 5 s tampil "Memproses… 5s", "Stop", "Menunggu token pertama… 5s"
+  - E2E node di 127.0.0.1: 91,1 s, 12.524 karakter, 12/12 seksi, 0 placeholder, URL terisi; firstTokenMs 90,6 s → konfirmasi buffering penuh
