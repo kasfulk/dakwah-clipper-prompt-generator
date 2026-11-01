@@ -1,9 +1,11 @@
 /**
- * Template prompt final. Placeholder: __URL__, __PALETTE__, __LAYOUT__, __PLAN__.
- * Placeholder diisi oleh model lokal; app hanya mengirim template apa adanya.
+ * Template prompt final. Placeholder: __TOOL_TITLE__, __TOOL_DIRECTIVE__, __TOOL_REQUEST__, __URL__,
+ * __TITLE__, __SPEAKER__, __SOCIAL__, __PALETTE__, __LAYOUT__, __PLAN__.
+ * __TOOL_* diisi dari alat terpilih (tools.js); sisanya dari isian user.
+ * Placeholder diisi oleh layanan AI (OpenAI/Anthropic/lokal); app hanya mengirim template apa adanya.
  */
 export const MASTER_TEMPLATE = `# MASTER PROMPT — ISLAMIC CINEMATIC MOTION GRAPHICS
-## EffectCraft from OpenDesign | Premium TikTok / Reels / Shorts Production
+## __TOOL_TITLE__ | Premium TikTok / Reels / Shorts Production
 
 ### 1. ROLE & OBJECTIVE
 
@@ -11,9 +13,19 @@ Act as a Senior Motion Graphics Designer, Cinematic Video Editor, Creative Direc
 
 Your task is to transform the supplied YouTube lecture clips into professional, emotionally engaging, cinematic short-form videos.
 
-Use \`effectcraft-from-opendesign\` as the primary motion graphics skill. The skill use a effectcraft for combining and opendesign for designing
+__TOOL_DIRECTIVE__
+
+**Required tooling — mandatory:** install \`__TOOL_REQUEST__\` and \`opendesign\` before you start, and use them. \`opendesign\` is not optional: it produces the layout and design system every clip must follow. If a tool is missing, install it first and state what you installed; never substitute another tool.
 
 **Source footage:** __URL__
+
+**Video title:** __TITLE__
+
+**Speaker:** __SPEAKER__
+
+**Social accounts to display & credit:**
+
+__SOCIAL__
 
 **Primary objectives:**
 - Capture audience attention within the first 1–3 seconds.
@@ -397,7 +409,18 @@ __PLAN__
 
 ---
 
-### 12. FINAL QUALITY CONTROL
+### 12. PITFALLS
+
+- Never use abbreviations, including in subtitles, hooks, kickers, titles, overlays, and end cards.
+- SAW → Sholallahu 'alaihi wa sallam
+- SWT → Subhanahu Wa Ta'ala
+- Write the full form on every occurrence; never shorten or translate the expanded form.
+- Preserve the exact spelling above, including capitalization and punctuation.
+- If the video shows a face, never place any ornament on it: no frames, borders, stickers, callouts, texture, graphic shapes, or typography may cover the face.
+
+---
+
+### 13. FINAL QUALITY CONTROL
 
 Before rendering, verify:
 
@@ -406,13 +429,14 @@ Before rendering, verify:
 3. Subtitle timestamps are respected.
 4. Arabic text is rendered correctly.
 5. No subtitle is cut off.
-6. No typography overlaps the speaker's face.
+6. No typography, ornament, or graphic overlaps the speaker's face.
 7. Color palette remains consistent.
 8. Motion graphics are smooth.
 9. Each clip has its own visual identity.
 10. All important religious statements preserve their original context.
 11. No fabricated religious imagery is included.
-12. The final output is optimized for TikTok, Instagram Reels, and YouTube Shorts.
+12. All honorifics are written in full — no SAW or SWT abbreviations.
+13. The final output is optimized for TikTok, Instagram Reels, and YouTube Shorts.
 
 **FINAL CREATIVE DIRECTION:**
 

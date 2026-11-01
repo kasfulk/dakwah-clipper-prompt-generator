@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildMessages, adaptClipTable } from './llm.js';
+import { PROVIDERS, adaptClipTable, buildMessages, buildRequest, resolveConfig } from './llm.js';
 import { buildFinalPrompt, replaceClipTable } from './finalPrompt.js';
 import { MASTER_TEMPLATE } from './masterPrompt.js';
 
@@ -27,7 +27,7 @@ test('buildFinalPrompt mengisi semua placeholder tanpa sisa', () => {
   assert.ok(out.includes('Tidak ada override — pakai ketentuan di atas.'));
   assert.ok(out.includes(PLAN));
   assert.deepEqual(out.match(/__(URL|PALETTE|LAYOUT|PLAN)__/g), null);
-  assert.equal((out.match(/^### \d+\./gm) ?? []).length, 12);
+  assert.equal((out.match(/^### \d+\./gm) ?? []).length, 13);
 });
 
 test('replaceClipTable mengganti baris klip, menyisakan satu baris per klip', () => {
@@ -38,7 +38,7 @@ test('replaceClipTable mengganti baris klip, menyisakan satu baris per klip', ()
   assert.ok(!out.includes('| c03 | Sekali celup ke neraka |'));
   assert.ok(!out.includes('Terima kasih.'));
   assert.equal((out.match(/^\| c\d+ \|/gm) ?? []).length, 2);
-  assert.equal((out.match(/^### \d+\./gm) ?? []).length, 12);
+  assert.equal((out.match(/^### \d+\./gm) ?? []).length, 13);
 });
 
 test('replaceClipTable mengabaikan balasan tanpa baris tabel', () => {
@@ -80,4 +80,58 @@ test('adaptClipTable melempar error HTTP dengan potongan respons', async () => {
     adaptClipTable(PLAN, { fetch: async () => new Response('model tidak ada', { status: 404 }) }),
     /HTTP 404 — model tidak ada/,
   );
+});
+
+test('resolveConfig mengisi bawaan layanan bila isian kosong', () => {
+  const local = PROVIDERS.find((p) => p.id === 'local');
+  assert.deepEqual(resolveConfig({ provider: 'local', url: '  ', model: '', apiKey: ' k ' }), {
+    id: 'local',
+    url: local.url,
+    model: local.model,
+    apiKey: 'k',
+  });
+  assert.equal(resolveConfig({ provider: 'entah' }).id, 'local');
+});
+
+test('buildRequest OpenAI: endpoint dilengkapi sekali, key jadi Bearer', () => {
+  const forUrl = (url) => {
+    const { url: built, init } = buildRequest(PLAN, { provider: 'openai', url, model: 'gpt-x', apiKey: 'sk-1' });
+    assert.equal(JSON.parse(init.body).model, 'gpt-x');
+    assert.equal(init.headers.authorization, 'Bearer sk-1');
+    return built;
+  };
+  assert.equal(forUrl('https://api.openai.com'), 'https://api.openai.com/v1/chat/completions');
+  assert.equal(forUrl('https://api.openai.com/v1/'), 'https://api.openai.com/v1/chat/completions');
+  assert.equal(
+    forUrl('https://proxy.local/v1/chat/completions'),
+    'https://proxy.local/v1/chat/completions',
+  );
+  assert.equal(buildRequest(PLAN, { provider: 'openai' }).init.headers.authorization, undefined);
+});
+
+test('buildRequest Anthropic: /v1/messages, header x-api-key, system terpisah', () => {
+  const { url, init } = buildRequest(PLAN, { provider: 'anthropic', apiKey: 'sk-ant' });
+  assert.equal(url, 'https://api.anthropic.com/v1/messages');
+  assert.equal(init.headers['x-api-key'], 'sk-ant');
+  assert.equal(init.headers['anthropic-version'], '2023-06-01');
+  const body = JSON.parse(init.body);
+  assert.deepEqual(body.messages, [{ role: 'user', content: PLAN }]);
+  assert.equal(body.system, buildMessages(PLAN)[0].content);
+});
+
+test('adaptClipTable membaca stream Anthropic (content_block_delta)', async () => {
+  const raw = sse([
+    { type: 'content_block_delta', delta: { type: 'text_delta', text: '| c01 |' } },
+    { type: 'content_block_delta', delta: { type: 'text_delta', text: ' a | b |' } },
+  ]);
+  let sent;
+  const text = await adaptClipTable(PLAN, {
+    config: { provider: 'anthropic', apiKey: 'k' },
+    fetch: async (url, init) => {
+      sent = { url, init };
+      return new Response(streamOf([raw]));
+    },
+  });
+  assert.equal(text, '| c01 | a | b |');
+  assert.equal(sent.url, 'https://api.anthropic.com/v1/messages');
 });

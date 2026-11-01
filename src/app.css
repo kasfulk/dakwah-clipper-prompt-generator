@@ -124,7 +124,37 @@ label {
   font-size: 0.85rem;
 }
 
+.field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.history-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.history-meta {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.history-meta strong {
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
 input,
+select,
 textarea {
   width: 100%;
   padding: 11px 13px;
@@ -144,6 +174,7 @@ textarea {
 }
 
 input:focus-visible,
+select:focus-visible,
 textarea:focus-visible,
 a:focus-visible,
 button:focus-visible {
@@ -206,11 +237,27 @@ code {
   pointer-events: none;
 }
 
+.btn.small {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
 .btn-row {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
+}
+
+.tool-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.tool-row .btn {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
 
 .output {
@@ -220,7 +267,9 @@ code {
 
 .output-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 10px;
 }
 
 pre {
@@ -250,6 +299,44 @@ ol.steps-list {
 
 ol.steps-list strong {
   color: var(--fg);
+}
+
+.account-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 150px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--accent);
+}
+
+.account-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.account-remove {
+  padding: 10px 12px;
+  line-height: 1;
+  font-size: 1rem;
+}
+
+.btn .plus {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
 footer {
