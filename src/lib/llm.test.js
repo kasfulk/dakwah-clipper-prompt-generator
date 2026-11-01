@@ -144,7 +144,7 @@ test('riwayat: prompt dirakit ulang dari template terkini, bukan teks beku', () 
     prompt: '# MASTER PROMPT LAMA TANPA ATURAN BAHASA',
     inputs: {
       urlInput: 'https://www.youtube.com/watch?v=m7LxQ9d2vYU',
-      planInput: '```json\n{"video_title":"Judul","video_spekar":"Ustadz","clips":[]}\n```',
+      planInput: '```json\n{"video_title":"Judul","video_speaker":"Ustadz","clips":[]}\n```',
       palette: 'Midnight #101116',
       layout: '',
       tool: 'remotion',
@@ -155,8 +155,20 @@ test('riwayat: prompt dirakit ulang dari template terkini, bukan teks beku', () 
   assert.ok(out.includes('Language — mandatory'));
   assert.ok(out.includes('| c01 | Berharap jadi tanah | Burgundy gelap |'));
   assert.ok(out.includes('**Video title:** Judul'));
+  assert.ok(out.includes('**Speaker:** Ustadz'));
   assert.ok(!out.includes('MASTER PROMPT LAMA'));
   assert.deepEqual(out.match(/__(URL|PALETTE|LAYOUT|PLAN|TITLE|SPEAKER|SOCIAL|TOOL_\w+)__/g), null);
+});
+
+test('riwayat: clip-plan lama dengan kunci video_spekar tetap terbaca', () => {
+  const out = rebuildHistoryPrompt({
+    prompt: '',
+    inputs: {
+      urlInput: 'm7LxQ9d2vYU',
+      planInput: '{"video_title":"Judul","video_spekar":"Ustadz Lama","clips":[]}',
+    },
+  });
+  assert.ok(out.includes('**Speaker:** Ustadz Lama'));
 });
 
 test('riwayat: data rusak jatuh ke teks tersimpan', () => {

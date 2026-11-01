@@ -10,7 +10,7 @@ const CLIP_PLAN = `Kamu adalah editor konten TikTok untuk kajian Islam. Tugasmu 
 - Jika file SRT tidak ditemukan atau tidak terbaca, HENTIKAN dan balas: "SRT tidak ditemukan". Jangan membuat klip dari ingatan atau perkiraan.
 
 ## BAHASA (WAJIB — JANGAN DILANGGAR)
-- Transkrip bisa berbahasa apa pun: Indonesia, Arab, Inggris, atau campuran. Semua field teks ("video_title", "video_spekar", "title", "kicker", "hook", "subtitle") WAJIB memakai bahasa asli transkrip.
+- Transkrip bisa berbahasa apa pun: Indonesia, Arab, Inggris, atau campuran. Semua field teks ("video_title", "video_speaker", "title", "kicker", "hook", "subtitle") WAJIB memakai bahasa asli transkrip.
 - DILARANG menerjemahkan ke bahasa lain — termasuk ke bahasa Indonesia bila transkripnya bukan Indonesia, dan ke bahasa Inggris bila transkripnya Indonesia. DILARANG mentransliterasi, DILARANG menulis ulang teks ke bahasa yang berbeda dari SRT.
 - DILARANG menerjemahkan sebagian field saja. Kalau transkripnya Indonesia, seluruh output tetap Indonesia. Kalau transkripnya campur, pertahankan campurannya apa adanya.
 - Hanya NAMA KUNCI JSON ("video_title", "clips", "subtitles", dst.) yang berbahasa Inggris. Nilainya mengikuti bahasa transkrip.
@@ -18,7 +18,7 @@ const CLIP_PLAN = `Kamu adalah editor konten TikTok untuk kajian Islam. Tugasmu 
 
 ## METADATA
 - video_title: judul video ini, tentukan dari isi transkrip.
-- video_spekar: nama ustadz/penceramah, tentukan dari isi transkrip.
+- video_speaker: nama ustadz/penceramah, tentukan dari isi transkrip. (Kunci lama "video_spekar" tetap dibaca kalau itu yang ada.)
 - source_url: __URL__
 
 ## ATURAN KETAT TIMESTAMP & SUBTITLE
@@ -55,7 +55,7 @@ Keluarkan HANYA JSON valid (tanpa penjelasan, tanpa markdown fence) dengan struk
 
 {
   "video_title": "",
-  "video_spekar": "",
+  "video_speaker": "",
   "source_url": "__URL__",
   "clips": [
     {

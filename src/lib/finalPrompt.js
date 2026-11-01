@@ -52,7 +52,7 @@ export function rebuildHistoryPrompt(entry) {
         plan: saved.text,
         accounts: sanitizeAccounts(inputs.accounts, PLATFORMS),
         title: meta.video_title ?? '',
-        speaker: meta.video_spekar ?? '',
+        speaker: meta.video_speaker ?? meta.video_spekar ?? '',
         tool: inputs.tool,
       }),
       entry.rows,

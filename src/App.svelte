@@ -44,7 +44,7 @@
   const plan = $derived(parseClipPlan(planInput));
   const meta = $derived(plan?.text ? JSON.parse(plan.text) : {});
   const title = $derived(meta.video_title ?? '');
-  const speaker = $derived(meta.video_spekar ?? '');
+  const speaker = $derived(meta.video_speaker ?? meta.video_spekar ?? '');
   const prompt = $derived(id ? clipPlanPrompt(id) : '');
   const simpleUrl = $derived(id ? `https://youtube.com/watch?v=${id}` : '');
   const command = $derived(id && plan?.text ? simplePrompt(id, plan.text, palette, layout, accounts, { title, speaker, tool }) : '');
