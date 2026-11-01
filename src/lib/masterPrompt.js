@@ -37,6 +37,14 @@ __SOCIAL__
 
 Do not turn the video into a generic slideshow. Every visual element must support the speaker's message.
 
+**Language — mandatory, overrides everything else:**
+
+- The lecture audio and every subtitle line stay in their original language. Copy each subtitle verbatim from the JSON Clip Plan in section 10: same words, same language, same timestamps. Never translate, transliterate, paraphrase, re-time, or rewrite a subtitle.
+- If the transcript is Indonesian, the on-screen subtitles are Indonesian. If it is English, they are English. If it mixes languages, keep the mix exactly as spoken.
+- Titles, kickers, hooks, overlays, end cards, and account captions use the language of the JSON Clip Plan. Never switch a field to another language, never provide a translated subtitle track, and never render two languages side by side.
+- This prompt is written in English; that is not an instruction to produce English text. The language rules above win.
+- The only allowed text change is expanding honorifics in full (see section 12). Do not translate the expanded form.
+
 ---
 
 ### 2. VISUAL IDENTITY & ART DIRECTION
@@ -411,6 +419,8 @@ __PLAN__
 
 ### 12. PITFALLS
 
+- Never translate, transliterate, or paraphrase subtitles, hooks, kickers, titles, overlays, or end cards. The text language is always the JSON Clip Plan language.
+- Never produce a translated subtitle track or a bilingual render.
 - Never use abbreviations, including in subtitles, hooks, kickers, titles, overlays, and end cards.
 - SAW → Sholallahu 'alaihi wa sallam
 - SWT → Subhanahu Wa Ta'ala
@@ -437,6 +447,8 @@ Before rendering, verify:
 11. No fabricated religious imagery is included.
 12. All honorifics are written in full — no SAW or SWT abbreviations.
 13. The final output is optimized for TikTok, Instagram Reels, and YouTube Shorts.
+14. Every subtitle, title, hook, kicker, overlay, and end card is in the JSON Clip Plan language — nothing was translated, transliterated, or paraphrased.
+15. Each subtitle is word-for-word identical to its JSON Clip Plan entry.
 
 **FINAL CREATIVE DIRECTION:**
 

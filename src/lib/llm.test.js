@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PROVIDERS, adaptClipTable, buildMessages, buildRequest, resolveConfig } from './llm.js';
-import { buildFinalPrompt, replaceClipTable } from './finalPrompt.js';
+import { buildFinalPrompt, rebuildHistoryPrompt, replaceClipTable } from './finalPrompt.js';
 import { MASTER_TEMPLATE } from './masterPrompt.js';
 
 const streamOf = (parts) =>
@@ -134,4 +134,33 @@ test('adaptClipTable membaca stream Anthropic (content_block_delta)', async () =
   });
   assert.equal(text, '| c01 | a | b |');
   assert.equal(sent.url, 'https://api.anthropic.com/v1/messages');
+});
+test('riwayat: prompt dirakit ulang dari template terkini, bukan teks beku', () => {
+  const entry = {
+    savedAt: '2026-10-31T00:00:00.000Z',
+    label: 'Lama',
+    sig: 'x',
+    rows: '| c01 | Berharap jadi tanah | Burgundy gelap |',
+    prompt: '# MASTER PROMPT LAMA TANPA ATURAN BAHASA',
+    inputs: {
+      urlInput: 'https://www.youtube.com/watch?v=m7LxQ9d2vYU',
+      planInput: '```json\n{"video_title":"Judul","video_spekar":"Ustadz","clips":[]}\n```',
+      palette: 'Midnight #101116',
+      layout: '',
+      tool: 'remotion',
+      accounts: [{ platform: 'Tiktok', username: 'dakwah' }],
+    },
+  };
+  const out = rebuildHistoryPrompt(entry);
+  assert.ok(out.includes('Language — mandatory'));
+  assert.ok(out.includes('| c01 | Berharap jadi tanah | Burgundy gelap |'));
+  assert.ok(out.includes('**Video title:** Judul'));
+  assert.ok(!out.includes('MASTER PROMPT LAMA'));
+  assert.deepEqual(out.match(/__(URL|PALETTE|LAYOUT|PLAN|TITLE|SPEAKER|SOCIAL|TOOL_\w+)__/g), null);
+});
+
+test('riwayat: data rusak jatuh ke teks tersimpan', () => {
+  assert.equal(rebuildHistoryPrompt({ prompt: 'lama', inputs: { urlInput: 'bukan url' } }), 'lama');
+  assert.equal(rebuildHistoryPrompt({ prompt: 'lama', inputs: { urlInput: 'm7LxQ9d2vYU', planInput: 'bukan json' } }), 'lama');
+  assert.equal(rebuildHistoryPrompt(undefined), '');
 });

@@ -1,7 +1,7 @@
 <script>
   import { parseYouTubeId, transcriptUrl } from './lib/youtube.js';
   import { clipPlanPrompt, simplePrompt, parseClipPlan } from './lib/prompts.js';
-  import { buildFinalPrompt, replaceClipTable } from './lib/finalPrompt.js';
+  import { buildFinalPrompt, rebuildHistoryPrompt, replaceClipTable } from './lib/finalPrompt.js';
   import { TOOLS, resolveTool } from './lib/tools.js';
   import { PROVIDERS, adaptClipTable, resolveConfig } from './lib/llm.js';
   import { PLATFORMS, accountsText, platformIcon } from './lib/social.js';
@@ -477,7 +477,7 @@
           </div>
           <div class="btn-row">
             <button class="btn ghost small" onclick={() => restore(entry)}>Muat</button>
-            <button class="btn ghost small" onclick={() => copy(entry.prompt, `history-${entry.savedAt}`)}>
+            <button class="btn ghost small" onclick={() => copy(rebuildHistoryPrompt(entry), `history-${entry.savedAt}`)}>
               {copied === `history-${entry.savedAt}` ? 'Tersalin ✓' : 'Copy'}
             </button>
             <button class="btn ghost small" onclick={() => dropHistory(i)}>Hapus</button>

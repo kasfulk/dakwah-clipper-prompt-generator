@@ -1,6 +1,8 @@
 import { MASTER_TEMPLATE } from './masterPrompt.js';
-import { accountsText } from './social.js';
-import { NOT_SET } from './prompts.js';
+import { accountsText, PLATFORMS } from './social.js';
+import { asText, sanitizeAccounts } from './storage.js';
+import { parseYouTubeId } from './youtube.js';
+import { NOT_SET, parseClipPlan } from './prompts.js';
 import { resolveTool } from './tools.js';
 
 const NO_OVERRIDE = 'Tidak ada override — pakai ketentuan di atas.';
@@ -29,6 +31,36 @@ export const buildFinalPrompt = ({
     .replaceAll('__SOCIAL__', () => accountsText(accounts))
     .replaceAll('__PLAN__', () => plan);
 };
+
+/**
+ * Prompt riwayat dirakit ulang dari template terkini, bukan disalin dari teks beku
+ * saat disimpan — entri lama kalau tidak akan terus membawa aturan prompt yang usang.
+ * Data rusak/tak lengkap jatuh ke teks tersimpan apa adanya.
+ */
+export function rebuildHistoryPrompt(entry) {
+  const inputs = entry?.inputs ?? {};
+  const vid = parseYouTubeId(asText(inputs.urlInput));
+  const saved = parseClipPlan(asText(inputs.planInput));
+  if (!vid || !saved?.text) return entry?.prompt ?? '';
+  try {
+    const meta = JSON.parse(saved.text);
+    return replaceClipTable(
+      buildFinalPrompt({
+        url: `https://youtube.com/watch?v=${vid}`,
+        palette: asText(inputs.palette),
+        layout: asText(inputs.layout),
+        plan: saved.text,
+        accounts: sanitizeAccounts(inputs.accounts, PLATFORMS),
+        title: meta.video_title ?? '',
+        speaker: meta.video_spekar ?? '',
+        tool: inputs.tool,
+      }),
+      entry.rows,
+    );
+  } catch {
+    return entry?.prompt ?? '';
+  }
+}
 
 const ROW = /^\| c\d+ \|.*\|$/;
 

@@ -8,7 +8,8 @@ export const PROVIDERS = [
 const SYSTEM = `Kamu menyusun tabel arah visual untuk klip video dakwah pendek.
 Keluarkan HANYA baris tabel Markdown, satu baris per klip pada clip-plan, dengan format:
 | c01 | subjek singkat (maks 6 kata) | arah visual singkat (maks 10 kata) |
-Aturan: tanpa header tabel, tanpa baris pemisah, tanpa penjelasan, tanpa pagar kode, tanpa teks lain.`;
+Aturan: tanpa header tabel, tanpa baris pemisah, tanpa penjelasan, tanpa pagar kode, tanpa teks lain.
+Gunakan bahasa asli clip-plan pada kolom subjek dan arah visual; jangan menerjemahkan, mentransliterasi, atau mengganti bahasanya.`;
 
 export const buildMessages = (planText) => [
   { role: 'system', content: SYSTEM },
