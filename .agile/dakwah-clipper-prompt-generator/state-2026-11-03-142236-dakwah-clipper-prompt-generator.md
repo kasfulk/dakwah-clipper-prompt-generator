@@ -37,5 +37,6 @@ Skipped stages:
 |---|---|
 | `npm test` | 38 pass, 0 fail |
 | `npm run build` | OK, `dist/assets/index-*.js` 89.60 kB |
-| Chromium: klik Download clip plan JSON | `mengapa-manusia-takut-mati.json`, isi JSON ter-*pretty-print* |
+| Chromium: klik Download clip plan JSON | `mengapa-manusia-takut-mati.json`, 179 byte, JSON pretty-print |
 | Chromium: Muat riwayat → final prompt → Download Markdown | `mengapa-manusia-takut-mati.md`, 17 434 byte, isi = final prompt lengkap |
+| Chromium ulang setelah perbaikan Safari (anchor + revoke tertunda) | JSON 179 byte, MD 17 434 byte — keduanya tetap terunduh |

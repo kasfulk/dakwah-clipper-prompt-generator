@@ -175,8 +175,11 @@
     const a = document.createElement('a');
     a.href = href;
     a.download = filename;
+    document.body.append(a);
     a.click();
-    URL.revokeObjectURL(href);
+    a.remove();
+    // Safari membatalkan unduhan bila URL dicabut terlalu cepat.
+    setTimeout(() => URL.revokeObjectURL(href), 1000);
   }
 
   function slug(text, fallback) {
