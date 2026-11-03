@@ -15,7 +15,7 @@ Your task is to transform the supplied YouTube lecture clips into professional, 
 
 __TOOL_DIRECTIVE__
 
-**Required tooling — mandatory:** install \`__TOOL_REQUEST__\` and \`opendesign\` before you start, and use them. \`opendesign\` is not optional: it produces the layout and design system every clip must follow. If a tool is missing, install it first and state what you installed; never substitute another tool.
+**Required tooling — mandatory:** install \`__TOOL_REQUEST__\`, \`opendesign\`, and \`video-use\` before you start, and use them. \`opendesign\` is not optional: it produces the layout and design system every clip must follow. \`video-use\` is not optional either: it runs the skip-silence finishing pass in section 12. If a tool is missing, install it first and state what you installed; never substitute another tool.
 
 **Source footage:** __URL__
 
@@ -43,7 +43,7 @@ Do not turn the video into a generic slideshow. Every visual element must suppor
 - If the transcript is Indonesian, the on-screen subtitles are Indonesian. If it is English, they are English. If it mixes languages, keep the mix exactly as spoken.
 - Titles, kickers, hooks, overlays, end cards, and account captions use the language of the JSON Clip Plan. Never switch a field to another language, never provide a translated subtitle track, and never render two languages side by side.
 - This prompt is written in English; that is not an instruction to produce English text. The language rules above win.
-- The only allowed text change is expanding honorifics in full (see section 12). Do not translate the expanded form.
+- The only allowed text change is expanding honorifics in full (see section 13). Do not translate the expanded form.
 
 ---
 
@@ -120,7 +120,7 @@ __PALETTE__
 - Frame rate: 30 FPS, matching source footage when possible.
 - Color space: Rec.709.
 - Format: MP4, H.264.
-- Audio: Preserve original speaker audio.
+- Audio: Preserve original speaker audio (silence is trimmed only in the section 12 finishing pass).
 
 **Composition guidelines:**
 
@@ -323,6 +323,11 @@ For accountability and deeds:
 
 Every clip should follow this storytelling sequence:
 
+**Clip length — the clip plan wins:**
+- Never shorten a clip to fit a target duration. If the clip plan gives a long clip, the whole discussion is rendered: opening, explanation, evidence, and closing.
+- A clip ends on the last word of a finished point, never mid-sentence and never mid-explanation.
+- Subtitles run to completion: every line is fully visible long enough to be read, and the last subtitle is never cut off by the render length.
+
 **PHASE 1 — HOOK (0–3 seconds)**
 - Strong headline.
 - Immediate visual contrast.
@@ -417,7 +422,26 @@ __PLAN__
 
 ---
 
-### 12. PITFALLS
+### 12. FINISHING PASS WITH \`video-use\` — SKIP SILENCE
+
+Every clip that has been rendered must go through a finishing pass with the \`video-use\` skill before it is considered done. A render that skipped this pass is not finished.
+
+**Skip-silence requirements:**
+
+- Remove leading silence: the clip starts on the first spoken word or on the first visual beat, with no dead air before the hook.
+- Remove trailing silence: the clip ends on the last spoken word, no silent tail after it.
+- Remove internal silence between sentences so playback stays efficient: no long pauses, no dead air inside the discussion.
+- Never cut speech: keep a short breath buffer (roughly 80–150 ms) on both sides of every cut so no syllable, consonant, or word ending is clipped.
+- Never cut across a subtitle boundary: silence is removed between sentences, so every subtitle stays complete, readable, and still in sync with the audio.
+- Never remove silence in the middle of a word, a Quranic recitation, or an Arabic quotation.
+- Re-export video and audio together after trimming so the burned-in subtitles stay aligned with the new timeline; re-time the subtitle cues when a trim shifts them.
+- Verify the result per clip: no clipped syllables at cut points, no audio/subtitle desync, and a duration that ends exactly on the last spoken word.
+
+**Report:** state which clips were processed, the total silence removed per clip, and confirm no speech was cut.
+
+---
+
+### 13. PITFALLS
 
 - Never translate, transliterate, or paraphrase subtitles, hooks, kickers, titles, overlays, or end cards. The text language is always the JSON Clip Plan language.
 - Never produce a translated subtitle track or a bilingual render.
@@ -430,7 +454,7 @@ __PLAN__
 
 ---
 
-### 13. FINAL QUALITY CONTROL
+### 14. FINAL QUALITY CONTROL
 
 Before rendering, verify:
 
@@ -438,21 +462,23 @@ Before rendering, verify:
 2. Original audio remains synchronized.
 3. Subtitle timestamps are respected.
 4. Arabic text is rendered correctly.
-5. No subtitle is cut off.
-6. No typography, ornament, or graphic overlaps the speaker's face.
-7. Color palette remains consistent.
-8. Motion graphics are smooth.
-9. Each clip has its own visual identity.
-10. All important religious statements preserve their original context.
-11. No fabricated religious imagery is included.
-12. All honorifics are written in full — no SAW or SWT abbreviations.
-13. The final output is optimized for TikTok, Instagram Reels, and YouTube Shorts.
-14. Every subtitle, title, hook, kicker, overlay, and end card is in the JSON Clip Plan language — nothing was translated, transliterated, or paraphrased.
-15. Each subtitle is word-for-word identical to its JSON Clip Plan entry.
+5. No subtitle is cut off — every line is complete, fully visible long enough to read, and never truncated at the clip's start or end.
+6. Every clip ends on the last word of a finished discussion; no clip stops mid-sentence or mid-explanation to hit a duration target.
+7. No typography, ornament, or graphic overlaps the speaker's face.
+8. Color palette remains consistent.
+9. Motion graphics are smooth.
+10. Each clip has its own visual identity.
+11. All important religious statements preserve their original context.
+12. No fabricated religious imagery is included.
+13. All honorifics are written in full — no SAW or SWT abbreviations.
+14. The final output is optimized for TikTok, Instagram Reels, and YouTube Shorts.
+15. Every subtitle, title, hook, kicker, overlay, and end card is in the JSON Clip Plan language — nothing was translated, transliterated, or paraphrased.
+16. Each subtitle is word-for-word identical to its JSON Clip Plan entry.
+17. Every clip has been through the section 12 \`video-use\` skip-silence pass: no leading dead air, no trailing silence, no dead pauses inside the discussion, and no speech cut at the trim points.
 
 **FINAL CREATIVE DIRECTION:**
 
-The final video should feel like a premium Islamic documentary condensed into a powerful short-form experience.
+The final video should feel like a premium Islamic documentary condensed into a powerful short-form experience — long enough to complete each discussion, tight enough that no second is wasted on silence.
 
 It must be visually sophisticated, emotionally engaging, readable, respectful, and professionally executed.
 

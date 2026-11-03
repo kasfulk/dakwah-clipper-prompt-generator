@@ -4,6 +4,7 @@ import { parseYouTubeId, transcriptUrl } from './youtube.js';
 import { clipPlanPrompt, simplePrompt, parseClipPlan, NO_OVERRIDE, NOT_SET } from './prompts.js';
 import { accountsText, NO_ACCOUNTS } from './social.js';
 import { buildFinalPrompt } from './finalPrompt.js';
+import { MASTER_TEMPLATE } from './masterPrompt.js';
 
 const ID = 'dQw4w9WgXcQ';
 
@@ -166,12 +167,20 @@ test('alat terpilih menentukan prompt sederhana dan prompt final', () => {
   const remotion = buildFinalPrompt({ url: 'u', palette: '', layout: '', plan, tool: 'remotion' });
   assert.ok(remotion.includes('## Remotion from OpenDesign | Premium TikTok / Reels / Shorts Production\n'));
   assert.ok(remotion.includes('Use `remotion-from-opendesign` as the primary motion graphics toolkit'));
-  assert.ok(remotion.includes('install `remotion-from-opendesign` and `opendesign`'));
+  assert.ok(remotion.includes('install `remotion-from-opendesign`, `opendesign`, and `video-use`'));
   assert.ok(!remotion.includes('effectcraft'));
 
   const effectcraft = buildFinalPrompt({ url: 'u', palette: '', layout: '', plan });
   assert.ok(effectcraft.includes('## EffectCraft from OpenDesign | Premium TikTok / Reels / Shorts Production\n'));
-  assert.ok(effectcraft.includes('install `effectcraft-from-opendesign` and `opendesign`'));
+  assert.ok(effectcraft.includes('install `effectcraft-from-opendesign`, `opendesign`, and `video-use`'));
   assert.ok(effectcraft.includes('`opendesign` is not optional'));
   assert.ok(!/__[A-Z_]+__/.test(remotion + effectcraft));
+});
+
+test('clip plan tidak membatasi durasi klip, master prompt wajib pass skip-silence', () => {
+  const plan = clipPlanPrompt(ID);
+  assert.ok(!plan.includes('30–75'));
+  assert.ok(plan.includes('Tidak ada batas durasi maksimum'));
+  assert.ok(/### 12\. FINISHING PASS WITH `video-use` — SKIP SILENCE/.test(MASTER_TEMPLATE));
+  assert.ok(MASTER_TEMPLATE.includes('install `__TOOL_REQUEST__`, `opendesign`, and `video-use`'));
 });

@@ -27,7 +27,7 @@ test('buildFinalPrompt mengisi semua placeholder tanpa sisa', () => {
   assert.ok(out.includes('Tidak ada override — pakai ketentuan di atas.'));
   assert.ok(out.includes(PLAN));
   assert.deepEqual(out.match(/__(URL|PALETTE|LAYOUT|PLAN)__/g), null);
-  assert.equal((out.match(/^### \d+\./gm) ?? []).length, 13);
+  assert.equal((out.match(/^### \d+\./gm) ?? []).length, 14);
 });
 
 test('replaceClipTable mengganti baris klip, menyisakan satu baris per klip', () => {
@@ -38,7 +38,7 @@ test('replaceClipTable mengganti baris klip, menyisakan satu baris per klip', ()
   assert.ok(!out.includes('| c03 | Sekali celup ke neraka |'));
   assert.ok(!out.includes('Terima kasih.'));
   assert.equal((out.match(/^\| c\d+ \|/gm) ?? []).length, 2);
-  assert.equal((out.match(/^### \d+\./gm) ?? []).length, 13);
+  assert.equal((out.match(/^### \d+\./gm) ?? []).length, 14);
 });
 
 test('replaceClipTable mengabaikan balasan tanpa baris tabel', () => {

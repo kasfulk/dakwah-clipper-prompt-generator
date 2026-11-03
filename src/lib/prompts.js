@@ -27,14 +27,17 @@ const CLIP_PLAN = `Kamu adalah editor konten TikTok untuk kajian Islam. Tugasmu 
 3. "start" dan "end" tiap subtitle = timestamp cue aslinya, dikonversi dari HH:MM:SS,mmm ke format MM:SS (buang milidetik; pakai H:MM:SS jika lebih dari 1 jam).
 4. "source_start" = start cue PERTAMA dalam klip. "source_end" = end cue TERAKHIR dalam klip.
 5. Cue dalam satu klip harus BERURUTAN dan BERSAMBUNGAN (tanpa melompati cue di tengah).
-6. Klip tidak boleh dimulai/berakhir di tengah kalimat. Mulai di awal kalimat/gagasan dan akhiri di akhir kalimat yang tuntas.
-7. Durasi tiap klip 30–75 detik. Tidak ada klip yang saling tumpang tindih. Sebar klip ke seluruh bagian video, bukan hanya di awal.
+6. Klip tidak boleh dimulai/berakhir di tengah kalimat. Mulai di awal kalimat/gagasan dan akhiri setelah kalimat terakhir pembahasan itu benar-benar tuntas.
+7. KELENGKAPAN PEMBAHASAN LEBIH PENTING DARIPADA DURASI. Satu klip = satu pembahasan utuh: pembuka, penjelasan, dalil/contoh, dan penutupnya. Kalau ustadz masih melanjutkan penjelasan yang sama, ikutkan sampai selesai — jangan berhenti sebelum ide, dalil, atau kisahnya tuntas.
+8. Tidak ada batas durasi maksimum. Klip boleh 60 detik, 3 menit, atau lebih selama pembahasannya utuh. Klip panjang yang jelas lebih baik daripada klip pendek yang menggantung. Jangan memilih klip di bawah 45 detik kecuali hook-nya memang sudah utuh dan tuntas.
+9. Tidak ada klip yang saling tumpang tindih. Sebar klip ke seluruh bagian video, bukan hanya di awal.
 
 ## KRITERIA PEMILIHAN KLIP (potensi viral)
+- Satu ide utuh, bisa dipahami tanpa menonton video penuh, dan pembahasannya selesai di dalam klip.
 - Hook kuat di 3 detik pertama (pertanyaan, pernyataan mengejutkan, kontras, kisah, atau pernyataan tegas).
-- Satu ide utuh, bisa dipahami tanpa menonton video penuh.
 - Bernilai praktis/emosional: nasihat, koreksi kesalahpahaman, kisah, motivasi, atau peringatan.
 - Hindari bagian basa-basi, salam panjang, dan konteks yang bergantung pada bagian lain.
+- Jangan memotong pembahasan di tengah jalan hanya demi durasi pendek. Kalau sebuah dalil dijelaskan lalu ditafsirkan lalu diberi contoh, ketiganya harus masuk dalam klip yang sama.
 - Jangan memilih potongan yang berpotensi menimbulkan salah paham jika terlepas dari konteks (mis. dalil/hukum yang butuh penjelasan lanjutan) kecuali penjelasannya ikut masuk dalam klip.
 
 ## ATURAN FIELD KREATIF
@@ -47,7 +50,9 @@ Untuk setiap klip, cek:
 - Semua timestamp ada di SRT dan subtitle identik dengan teks SRT.
 - Bahasa setiap field teks sama dengan bahasa transkrip: tidak ada satu kata pun yang diterjemahkan.
 - source_start/source_end cocok dengan cue pertama/terakhir.
-- Durasi memenuhi aturan, tidak ada overlap antar klip.
+- Tidak ada kalimat yang terpotong: cue pertama membuka kalimat, cue terakhir menutup kalimat dan pembahasannya.
+- Setiap pembahasan selesai di dalam klipnya. Kalau masih terasa menggantung, perpanjang klip ke cue berikutnya sampai tuntas — jangan biarkan karena takut durasi.
+- Tidak ada overlap antar klip, dan klip tersebar di seluruh video.
 Perbaiki jika ada yang gagal sebelum menjawab.
 
 ## FORMAT OUTPUT
