@@ -168,6 +168,24 @@
       if (copied === key) copied = '';
     }, 1600);
   }
+
+  /** Unduhan lokal: blob + anchor sekali pakai. */
+  function download(text, filename, type) {
+    const href = URL.createObjectURL(new Blob([text], { type }));
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(href);
+  }
+
+  function slug(text, fallback) {
+    const s = String(text ?? '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    return (s || fallback).slice(0, 60);
+  }
 </script>
 
 <main>
@@ -402,6 +420,19 @@
       <p class="hint error">{plan.error}</p>
     {:else if plan?.text}
       <p class="hint ok">Clip-plan valid — {JSON.parse(plan.text).clips?.length ?? 0} klip terdeteksi.</p>
+      <div class="btn-row">
+        <button
+          class="btn ghost"
+          onclick={() =>
+            download(
+              JSON.stringify(JSON.parse(plan.text), null, 2),
+              `${slug(title, 'clip-plan')}.json`,
+              'application/json',
+            )}
+        >
+          Download clip plan JSON
+        </button>
+      </div>
     {/if}
 
     {#if command}
@@ -446,6 +477,12 @@
         <div class="output-actions">
           <button class="btn ghost" onclick={() => copy(finalPrompt, 'final')}>
             {copied === 'final' ? 'Tersalin ✓' : 'Copy final prompt'}
+          </button>
+          <button
+            class="btn ghost"
+            onclick={() => download(finalPrompt, `${slug(title, 'final-prompt')}.md`, 'text/markdown;charset=utf-8')}
+          >
+            Download Markdown
           </button>
           <button class="btn ghost" onclick={saveHistory}>
             {saved === 'history' ? 'Tersimpan ✓' : 'Simpan ke riwayat'}
