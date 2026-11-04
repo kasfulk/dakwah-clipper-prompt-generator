@@ -410,6 +410,14 @@ __PLAN__
 
 ### 11. PERFORMANCE & RENDERING OPTIMIZATION
 
+**Mandatory — sequential processing only:** edit and render one clip at a time, start to finish, before touching the next clip. Never run editing or rendering in parallel.
+
+- Do not start a clip's edit until the previous clip has finished rendering and passed section 12.
+- Do not fan out parallel renders, background render queues, or multiple renderer instances for this playlist.
+- Do not run two encode, transcode, or \`video-use\` jobs at the same time — the finishing pass of clip N must complete before clip N+1 begins.
+- Running these jobs in parallel saturates CPU, GPU, memory, and disk I/O, which slows every job down, risks thermal throttling and out-of-memory crashes, and can corrupt partial render output. Sequential rendering is required even though it takes longer.
+- If a batch or loop is unavoidable, let it iterate one clip per step and wait for each step to exit successfully; never use a parallel mapper, a concurrent queue, or shell backgrounding to render several clips at once.
+
 - Use reusable motion graphics components.
 - Reuse typography styles and animation presets.
 - Optimize particle count.
@@ -451,6 +459,7 @@ Every clip that has been rendered must go through a finishing pass with the \`vi
 - Write the full form on every occurrence; never shorten or translate the expanded form.
 - Preserve the exact spelling above, including capitalization and punctuation.
 - If the video shows a face, never place any ornament on it: no frames, borders, stickers, callouts, texture, graphic shapes, or typography may cover the face.
+- Never edit or render clips in parallel. Process them strictly one at a time as required by section 11; a parallel render will overload the machine.
 
 ---
 
