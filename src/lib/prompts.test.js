@@ -181,6 +181,9 @@ test('clip plan tidak membatasi durasi klip, master prompt wajib pass skip-silen
   const plan = clipPlanPrompt(ID);
   assert.ok(!plan.includes('30–75'));
   assert.ok(plan.includes('Tidak ada batas durasi maksimum'));
+  assert.ok(plan.includes('KONTEKS & ARTIKULASI JELAS'));
+  assert.ok(plan.includes('JANGAN menebak'));
+  assert.ok(plan.includes('sesuai aturan 10'));
   assert.ok(/### 12\. FINISHING PASS WITH `video-use` — SKIP SILENCE/.test(MASTER_TEMPLATE));
   assert.ok(MASTER_TEMPLATE.includes('install `__TOOL_REQUEST__`, `opendesign`, and `video-use`'));
 });
