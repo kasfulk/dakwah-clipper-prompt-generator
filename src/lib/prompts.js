@@ -23,15 +23,16 @@ const CLIP_PLAN = `Kamu adalah editor konten TikTok untuk kajian Islam. Tugasmu 
 
 ## ATURAN KETAT TIMESTAMP & SUBTITLE
 1. Setiap entri di "subtitles" harus berasal dari SATU cue SRT yang nyata (1 cue = 1 entri). Jangan menggabung, memecah, atau menambah cue.
-2. Teks "subtitle" harus SALINAN PERSIS (verbatim) dari teks cue SRT, dalam bahasa aslinya. Dilarang memparafrase, merapikan kalimat, mentransliterasi, menerjemahkan, atau memperbaiki isi. Pengecualian hanya: hapus tag/nomor urut SRT, gabungkan baris ganda dalam satu cue menjadi satu baris, dan perjelas kata yang tidak jelas sesuai aturan 10.
+2. Teks "subtitle" harus SALINAN PERSIS (verbatim) dari teks cue SRT, dalam bahasa aslinya. Dilarang memparafrase, merapikan kalimat, mentransliterasi, menerjemahkan, atau memperbaiki isi. Pengecualian hanya: hapus tag/nomor urut SRT, gabungkan baris ganda dalam satu cue menjadi satu baris, dan perjelas kata yang tidak jelas sesuai aturan 11.
 3. "start" dan "end" tiap subtitle = timestamp cue aslinya, dikonversi dari HH:MM:SS,mmm ke format MM:SS (buang milidetik; pakai H:MM:SS jika lebih dari 1 jam).
 4. "source_start" = start cue PERTAMA dalam klip. "source_end" = end cue TERAKHIR dalam klip.
 5. Cue dalam satu klip harus BERURUTAN dan BERSAMBUNGAN (tanpa melompati cue di tengah).
 6. Klip tidak boleh dimulai/berakhir di tengah kalimat. Mulai di awal kalimat/gagasan dan akhiri setelah kalimat terakhir pembahasan itu benar-benar tuntas.
 7. KELENGKAPAN PEMBAHASAN LEBIH PENTING DARIPADA DURASI. Satu klip = satu pembahasan utuh: pembuka, penjelasan, dalil/contoh, dan penutupnya. Kalau ustadz masih melanjutkan penjelasan yang sama, ikutkan sampai selesai — jangan berhenti sebelum ide, dalil, atau kisahnya tuntas.
-8. Tidak ada batas durasi maksimum. Klip boleh 60 detik, 3 menit, atau lebih selama pembahasannya utuh. Klip panjang yang jelas lebih baik daripada klip pendek yang menggantung. Jangan memilih klip di bawah 45 detik kecuali hook-nya memang sudah utuh dan tuntas.
-9. Tidak ada klip yang saling tumpang tindih. Sebar klip ke seluruh bagian video, bukan hanya di awal.
-10. KONTEKS & ARTIKULASI JELAS. Setiap subtitle harus terbaca jelas saat dibaca berurutan bersama cue sebelum dan sesudahnya di klip yang sama: subjek, kata kerja, dan objeknya utuh, tidak menggantung, dan tidak berubah makna saat berdiri sendiri.
+8. Tidak ada batas durasi maksimum. Klip boleh 3 menit atau lebih selama pembahasannya utuh. Klip panjang yang jelas lebih baik daripada klip pendek yang menggantung. Jangan memilih klip di bawah 100 detik kecuali hook-nya memang sudah utuh dan tuntas.
+9. Durasi akhir tidak menjadi pertimbangan utama karena semua klip akan menjalani proses skip-silence di bagian finishing (section 12 master prompt). Tujuan akhir adalah TikTok/Reels/Shorts dengan durasi maksimal 7–10 menit — tetapi jika sebuah pembahasan bisa disampaikan secara jelas dalam 3 menit, itu lebih baik daripada memaksanya masuk dalam 60 detik dengan artikulasi yang terburu-buru atau potongan yang menggantung.
+10. Tidak ada klip yang saling tumpang tindih. Sebar klip ke seluruh bagian video, bukan hanya di awal.
+11. KONTEKS & ARTIKULASI JELAS. Setiap subtitle harus terbaca jelas saat dibaca berurutan bersama cue sebelum dan sesudahnya di klip yang sama: subjek, kata kerja, dan objeknya utuh, tidak menggantung, dan tidak berubah makna saat berdiri sendiri.
     - Jika cue SRT tidak jelas (kata terpotong, salah dengar, istilah asing rusak, atau kalimat tidak nyambung), perjelas SEMINIMAL mungkin: tulis kata yang paling mungkin diucapkan dan paling nyambung dengan konteks, tanpa menambah, mengurangi, atau mengubah makna ustadz.
     - Jika artinya tetap tidak bisa dipastikan dari konteks, JANGAN menebak. Pilih klip lain dari bagian yang jelas.
 

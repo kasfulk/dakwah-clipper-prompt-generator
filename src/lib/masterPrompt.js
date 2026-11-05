@@ -412,6 +412,8 @@ __PLAN__
 
 **Mandatory — sequential processing only:** edit and render one clip at a time, start to finish, before touching the next clip. Never run editing or rendering in parallel.
 
+**Mandatory — complete the full batch:** finish every clip requested in the Clip Plan in this single run, end to end, without stopping to ask for confirmation, report intermediate progress, or wait for a re-check between clips. Do not pause after one clip to consult the harness or the user; the only acceptable stopping points are a real tool failure and the completion of the entire playlist.
+
 - Do not start a clip's edit until the previous clip has finished rendering and passed section 12.
 - Do not fan out parallel renders, background render queues, or multiple renderer instances for this playlist.
 - Do not run two encode, transcode, or \`video-use\` jobs at the same time — the finishing pass of clip N must complete before clip N+1 begins.
@@ -484,6 +486,7 @@ Before rendering, verify:
 15. Every subtitle, title, hook, kicker, overlay, and end card is in the JSON Clip Plan language — nothing was translated, transliterated, or paraphrased.
 16. Each subtitle is word-for-word identical to its JSON Clip Plan entry.
 17. Every clip has been through the section 12 \`video-use\` skip-silence pass: no leading dead air, no trailing silence, no dead pauses inside the discussion, and no speech cut at the trim points.
+18. Every clip from the Clip Plan has been rendered and finished in this run — none deferred, none awaiting a harness re-check or user confirmation.
 
 **FINAL CREATIVE DIRECTION:**
 
