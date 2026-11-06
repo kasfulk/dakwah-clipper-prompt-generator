@@ -488,6 +488,17 @@ Before rendering, verify:
 17. Every clip has been through the section 12 \`video-use\` skip-silence pass: no leading dead air, no trailing silence, no dead pauses inside the discussion, and no speech cut at the trim points.
 18. Every clip from the Clip Plan has been rendered and finished in this run — none deferred, none awaiting a harness re-check or user confirmation.
 
+**PHASE 13 — LOSSLESS RE-RENDER & ENCODE (repro pass):**
+
+For every rendered result, as the last phase of the run:
+
+1. Render each result file losslessly (visually lossless intermediate — high-quality codec, no quality loss at this stage).
+2. Encode the intermediate with H.264 CRF 21.
+3. Overwrite the old result file with the CRF 21 encode — the finished deliverable replaces the raw render; no duplicate files are left behind.
+4. Repro runs sequentially, one clip at a time, same as every other phase.
+
+A clip is only done after its repro pass has completed and the CRF 21 file has replaced the old render.
+
 **FINAL CREATIVE DIRECTION:**
 
 The final video should feel like a premium Islamic documentary condensed into a powerful short-form experience — long enough to complete each discussion, tight enough that no second is wasted on silence.
